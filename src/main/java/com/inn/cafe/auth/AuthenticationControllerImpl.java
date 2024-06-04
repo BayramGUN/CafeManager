@@ -1,5 +1,6 @@
 package com.inn.cafe.auth;
 
+import org.hibernate.NonUniqueObjectException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,8 @@ import com.inn.cafe.auth.dto.command.AuthenticationRequest;
 import com.inn.cafe.auth.dto.command.RegisterRequest;
 import com.inn.cafe.auth.dto.query.AuthenticationResponse;
 import com.inn.cafe.auth.service.AuthenticationService;
+import com.inn.cafe.exception.CustomBadRequestException;
+import com.inn.cafe.exception.CustomNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,7 +32,13 @@ public class AuthenticationControllerImpl implements AuthenticationController {
   public ResponseEntity<AuthenticationResponse> register(
     @RequestBody(required = true) RegisterRequest request
   ) {
-    return ResponseEntity.ok(authenticationService.register(request));
+    try {
+      
+      return ResponseEntity.ok(authenticationService.register(request));
+    } catch (NonUniqueObjectException exception) {
+      exception.printStackTrace();
+      throw new CustomBadRequestException(exception.getMessage());
+    }
   }
   
   @Override
@@ -38,7 +47,12 @@ public class AuthenticationControllerImpl implements AuthenticationController {
   public ResponseEntity<AuthenticationResponse> authenticate(
     @RequestBody(required = true) AuthenticationRequest request
   ) {
-    return ResponseEntity.ok(authenticationService.authenticate(request));
+    try {
+      
+      return ResponseEntity.ok(authenticationService.authenticate(request));
+    } catch (Exception exception) {
+      throw new CustomNotFoundException(exception.getMessage());
+    }
   }
   
 }

@@ -100,4 +100,9 @@ public class User implements UserDetails {
   public boolean isEnabled() {
     return true;
   }
+
+  public void map(Object object, Object object2) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'map'");
+  }
 }

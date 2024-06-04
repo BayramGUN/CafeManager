@@ -3,8 +3,9 @@ package com.inn.cafe.user.service;
 
 import java.util.List;
 
-import com.inn.cafe.user.dto.UpdateUserRequest;
-import com.inn.cafe.user.dto.UserResponse;
+import com.inn.cafe.user.dto.command.CreateUserRequest;
+import com.inn.cafe.user.dto.command.UpdateUserRequest;
+import com.inn.cafe.user.dto.query.UserResponse;
 
 
 public interface UserService {
@@ -14,6 +15,7 @@ public interface UserService {
   public UserResponse getByEmail(String email);
 
   // Commands:
+  public String createUserAsAdmin(CreateUserRequest request);
   public String update(Integer id, UpdateUserRequest request);
   public String softDelete(Integer id);
 

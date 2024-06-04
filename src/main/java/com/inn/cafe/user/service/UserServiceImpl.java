@@ -2,13 +2,18 @@ package com.inn.cafe.user.service;
 
 import java.util.List;
 
+import org.hibernate.NonUniqueObjectException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.inn.cafe.config.jwt.JwtService;
 import com.inn.cafe.user.dao.UserRepository;
 import com.inn.cafe.user.data.User;
+import com.inn.cafe.user.data.enums.Role;
 import com.inn.cafe.user.data.enums.Status;
-import com.inn.cafe.user.dto.UpdateUserRequest;
-import com.inn.cafe.user.dto.UserResponse;
+import com.inn.cafe.user.dto.command.CreateUserRequest;
+import com.inn.cafe.user.dto.command.UpdateUserRequest;
+import com.inn.cafe.user.dto.query.UserResponse;
 import com.inn.cafe.utils.mapper.ObjectMapperUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -18,6 +23,10 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService {
 
   private final UserRepository repository;
+  private final PasswordEncoder passwordEncoder;
+  private final JwtService jwtService;
+
+
 
   @Override
   public List<UserResponse> getAll() {
@@ -58,6 +67,38 @@ public class UserServiceImpl implements UserService {
     } catch (Exception exception) {
       return exception.getMessage();
     }
+  }
+
+  @Override
+  public String createUserAsAdmin(CreateUserRequest request) {
+    
+    var isEmailExists = repository.existsByEmail(request.getEmail());
+    if (isEmailExists)
+      throw new NonUniqueObjectException("This email already using: {}", request.getEmail());
+
+    var isContactNumberExists = repository.existsByContactNumber(request.getContactNumber());
+    if (isContactNumberExists)
+      throw new NonUniqueObjectException("This username already using: {}", request.getContactNumber());
+
+    var isUsernameExists = repository.existsByUsername(request.getContactNumber());
+    if (isUsernameExists)
+      throw new NonUniqueObjectException("This contact number already using: {}", request.getContactNumber());
+
+    var user = User.builder()
+                   .firstName(request.getFirstName())
+                   .lastName(request.getLastName())
+                   .email(request.getEmail())
+                   .username(request.getUsername())
+                   .contactNumber(request.getContactNumber())
+                   .password(passwordEncoder.encode(request.getPassword()))
+                   .role(Role.ADMIN)
+                   .status(Status.ACTIVE)
+                   .build();
+
+    repository.save(user);
+    var jwt = jwtService.generateToken(user);
+
+    return "Admin created successfully! Here is token: " + jwt;
   }
   //private UserResponse userToUserResponse(User user) {
   //  var response = UserResponse.builder()

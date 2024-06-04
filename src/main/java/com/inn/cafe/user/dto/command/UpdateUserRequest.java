@@ -1,4 +1,4 @@
-package com.inn.cafe.user.dto;
+package com.inn.cafe.user.dto.command;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponse {
-  private Integer id;
-  private String fullName;
-  private String contactNumber;
+public class UpdateUserRequest {
   private String username;
   private String email;
+  private String contactNumber;
 }
