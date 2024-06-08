@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +20,7 @@ import com.inn.cafe.category.dto.command.UpdateCategoryRequest;
 import com.inn.cafe.category.dto.query.CategoryResponse;
 import com.inn.cafe.category.service.command.CategoryCommandService;
 import com.inn.cafe.category.service.query.CategoryQueryService;
+import com.inn.cafe.product.dto.query.ProductResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,21 +44,32 @@ public class CategoryControllerImpl implements CategoryController {
   @GetMapping("/{id}")
   @ResponseBody
   public ResponseEntity<CategoryResponse> getById(
-    @PathVariable Integer id
+    @PathVariable final Integer id
   ) {
     return ResponseEntity.ok(queryService.getById(id));
+  }
+  @Override
+  @GetMapping("/{id}/products")
+  @ResponseBody
+  public ResponseEntity<List<ProductResponse>> getCategoryProducts(
+    @PathVariable final Integer id
+  ) {
+    return ResponseEntity.ok(queryService.getCategoryProducts(id));
   }
     
   @Override
   @GetMapping("/getBy")
   @ResponseBody
-  public ResponseEntity<CategoryResponse> getByName(String name) {
+  public ResponseEntity<CategoryResponse> getByName(
+    @RequestParam(name = "name")
+    final String name
+  ) {
     return ResponseEntity.ok(queryService.getByName(name));
   }
 
   @Override
   @PostMapping("/insert")
-  public ResponseEntity<String> add(
+  public ResponseEntity<CategoryResponse> add(
     @RequestBody(required = true) CreateCategoryRequest request) {
     return ResponseEntity.ok(commandService.insert(request));
   }

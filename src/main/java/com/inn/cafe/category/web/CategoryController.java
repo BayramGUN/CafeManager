@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.inn.cafe.category.dto.command.CreateCategoryRequest;
 import com.inn.cafe.category.dto.command.UpdateCategoryRequest;
 import com.inn.cafe.category.dto.query.CategoryResponse;
+import com.inn.cafe.product.dto.query.ProductResponse;
 
 @RestController
 @RequestMapping("/api/v1/categories")
@@ -23,15 +24,22 @@ public interface CategoryController {
 
   @GetMapping
   public ResponseEntity<List<CategoryResponse>> getAll();
+
   @GetMapping("/{id}")
   public ResponseEntity<CategoryResponse> getById(@PathVariable final Integer id);
+
+  @GetMapping("/{id}/products")
+  public ResponseEntity<List<ProductResponse>> getCategoryProducts(
+    @PathVariable final Integer id
+  );
+
   @GetMapping("/getBy")
   public ResponseEntity<CategoryResponse> getByName(
     @RequestParam(name = "name") final String name
   );
 
   @PostMapping("/insert")
-  public ResponseEntity<String> add(
+  public ResponseEntity<CategoryResponse> add(
     @RequestBody(required = true) final CreateCategoryRequest request
   );
 

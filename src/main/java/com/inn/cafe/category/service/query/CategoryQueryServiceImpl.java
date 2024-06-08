@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import com.inn.cafe.category.dao.CategoryRepository;
 import com.inn.cafe.category.data.Category;
 import com.inn.cafe.category.dto.query.CategoryResponse;
+import com.inn.cafe.product.dto.query.ProductResponse;
+import com.inn.cafe.product.service.query.ProductQueryService;
 import com.inn.cafe.utils.mapper.ObjectMapperUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class CategoryQueryServiceImpl implements CategoryQueryService {
 
   private final CategoryRepository repository;
+  private final ProductQueryService productQueryService;
 
   @Override
   public List<CategoryResponse> getAll() {
@@ -27,6 +30,12 @@ public class CategoryQueryServiceImpl implements CategoryQueryService {
     var category = repository.findById(id).orElseThrow(
       () -> new RuntimeException("Category not Found!"));
     return ObjectMapperUtils.map(category, CategoryResponse.class);    
+  }
+
+  @Override
+  public List<ProductResponse> getCategoryProducts(Integer id) {
+    var products = productQueryService.getAllByCategoryId(id);
+    return products;   
   }
     
   @Override

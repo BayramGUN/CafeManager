@@ -22,13 +22,23 @@ public interface ProductController {
   @GetMapping
   public ResponseEntity<List<ProductResponse>> getAll();
 
+  @GetMapping("/{id}")
+  public ResponseEntity<ProductResponse> getById(
+    @PathVariable final Integer id 
+  );
+
   @GetMapping("/getBy")
   public ResponseEntity<ProductResponse> getBy(
     @RequestParam(name = "name") final String name 
   );
 
+  @GetMapping("/filterBy")
+  public ResponseEntity<List<ProductResponse>> filterBy(
+    @RequestParam("category") final String query 
+  );
+
   @PostMapping("/insert")
-  public ResponseEntity<String> create(
+  public ResponseEntity<ProductResponse> create(
     @RequestBody(required = true) CreateProductRequest request
   );
 

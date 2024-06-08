@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.inn.cafe.product.dto.command.CreateProductRequest;
 import com.inn.cafe.product.dto.command.UpdateProductRequest;
+import com.inn.cafe.product.dto.query.ProductCategoryFilterQuery;
 import com.inn.cafe.product.dto.query.ProductResponse;
 import com.inn.cafe.product.service.command.ProductCommandService;
 import com.inn.cafe.product.service.query.ProductQueryService;
@@ -32,7 +34,7 @@ public class ProductControllerImpl implements ProductController {
 
   @Override
   @PostMapping("/insert")
-  public ResponseEntity<String> create(
+  public ResponseEntity<ProductResponse> create(
     @RequestBody(required = true)
     CreateProductRequest request
   ) {
@@ -64,8 +66,37 @@ public class ProductControllerImpl implements ProductController {
 
   @Override
   @GetMapping("/getBy")
-  public ResponseEntity<ProductResponse> getBy(String name) {
+  public ResponseEntity<ProductResponse> getBy(
+    @RequestParam(name = "name")
+    final String name
+  ) {
     return ResponseEntity.ok(queryService.getByName(name));
+  }
+
+  @Override
+  @GetMapping("/filterBy")
+  public ResponseEntity<List<ProductResponse>> filterBy(
+    @RequestParam(name = "category")
+    final String request
+  ) {
+    ProductCategoryFilterQuery query;
+    try {
+      Integer categoryId = Integer.parseInt(request);
+      query = new ProductCategoryFilterQuery(categoryId, null);
+    } catch (NumberFormatException e) {
+      query = new ProductCategoryFilterQuery(null, request);
+    }
+    return ResponseEntity.ok(queryService.getAllByCategory(query));
+  }
+  
+  
+  @Override
+  @GetMapping("/{id}")
+  public ResponseEntity<ProductResponse> getById(
+    @PathVariable
+    final Integer id
+  ) {
+    return ResponseEntity.ok(queryService.getById(id));
   }
   
 }

@@ -6,6 +6,7 @@ import com.inn.cafe.category.dao.CategoryRepository;
 import com.inn.cafe.category.data.Category;
 import com.inn.cafe.category.dto.command.CreateCategoryRequest;
 import com.inn.cafe.category.dto.command.UpdateCategoryRequest;
+import com.inn.cafe.category.dto.query.CategoryResponse;
 import com.inn.cafe.utils.mapper.ObjectMapperUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -28,10 +29,10 @@ public class CategoryCommandServiceImpl implements CategoryCommandService {
   }
 
   @Override
-  public String insert(CreateCategoryRequest request) {
-    var category = ObjectMapperUtils.map(request, Category.class);
-    repository.save(category);
-    return "Category added successfully!";
+  public CategoryResponse insert(CreateCategoryRequest request) {
+    var entity = ObjectMapperUtils.map(request, Category.class);
+    var category = repository.save(entity);
+    return ObjectMapperUtils.map(category, CategoryResponse.class);
   }
 
   @Override

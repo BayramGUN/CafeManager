@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.inn.cafe.product.dao.ProductRepository;
 import com.inn.cafe.product.data.Product;
+import com.inn.cafe.product.dto.query.ProductCategoryFilterQuery;
 import com.inn.cafe.product.dto.query.ProductResponse;
 import com.inn.cafe.utils.mapper.ObjectMapperUtils;
 
@@ -36,6 +37,24 @@ public class ProductQueryServiceImpl implements ProductQueryService {
       () -> new RuntimeException("Product not found!")
     );
     return ObjectMapperUtils.map(product, ProductResponse.class);
+  }
+
+  @Override
+  public List<ProductResponse> getAllByCategory(ProductCategoryFilterQuery filter) {
+    List<Product> products;
+    if (filter.getId() != null)
+      products = repository.findAllByCategoryId(filter.getId());
+    else 
+      products = repository.findAllByCategoryName(filter.getName());
+    
+    return ObjectMapperUtils.mapAll(products, ProductResponse.class);
+      
+  }
+
+  @Override
+  public List<ProductResponse> getAllByCategoryId(Integer categoryId) {
+    var products = repository.findAllByCategoryId(categoryId);
+    return ObjectMapperUtils.mapAll(products, ProductResponse.class);
   }
   
 }
