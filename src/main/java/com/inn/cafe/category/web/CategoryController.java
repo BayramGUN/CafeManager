@@ -1,4 +1,4 @@
-package com.inn.cafe.category;
+package com.inn.cafe.category.web;
 
 import java.util.List;
 
@@ -20,28 +20,29 @@ import com.inn.cafe.category.dto.query.CategoryResponse;
 @RestController
 @RequestMapping("/api/v1/categories")
 public interface CategoryController {
+
   @GetMapping
   public ResponseEntity<List<CategoryResponse>> getAll();
   @GetMapping("/{id}")
-  public ResponseEntity<CategoryResponse> getById(@PathVariable Integer id);
+  public ResponseEntity<CategoryResponse> getById(@PathVariable final Integer id);
   @GetMapping("/getBy")
   public ResponseEntity<CategoryResponse> getByName(
-    @RequestParam(name = "name") String name
+    @RequestParam(name = "name") final String name
   );
 
   @PostMapping("/insert")
   public ResponseEntity<String> add(
-    @RequestBody(required = true) CreateCategoryRequest request
+    @RequestBody(required = true) final CreateCategoryRequest request
   );
 
   @PutMapping("/{id}/update")
   public ResponseEntity<String> update(
-    @PathVariable Integer id,
-    @RequestBody(required = true) UpdateCategoryRequest request
+    @PathVariable final Integer id,
+    @RequestBody(required = true) final UpdateCategoryRequest request
   );
   @DeleteMapping("/{id}/delete")
   public ResponseEntity<String> delete(
-    @PathVariable Integer id
+    @PathVariable final Integer id
   );
   
 }

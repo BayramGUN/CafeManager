@@ -1,4 +1,4 @@
-package com.inn.cafe.user;
+package com.inn.cafe.user.web;
 
 import java.util.List;
 
@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.inn.cafe.exception.CustomBadRequestException;
-import com.inn.cafe.exception.CustomNotFoundException;
 import com.inn.cafe.user.dto.command.CreateUserRequest;
 import com.inn.cafe.user.dto.command.UpdateUserRequest;
 import com.inn.cafe.user.dto.query.UserResponse;
 import com.inn.cafe.user.exception.UserNotFoundException;
-import com.inn.cafe.user.service.UserService;
+import com.inn.cafe.user.service.command.UserCommandService;
+import com.inn.cafe.user.service.query.UserQueryService;
 
 import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +32,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserControllerImpl implements UserController {
 
-  private final UserService userService;
+  private final UserCommandService commandService;
+  private final UserQueryService queryService;
 
   @Override
   @RolesAllowed(value = { "ADMIN" })
   @GetMapping
   @ResponseBody
   public ResponseEntity<List<UserResponse>> getAll() {
-    return ResponseEntity.ok(userService.getAll());
+    return ResponseEntity.ok(queryService.getAll());
   }
   
   @Override
@@ -49,7 +50,7 @@ public class UserControllerImpl implements UserController {
     @RequestParam(name = "email") String email
   ) {
     try {
-      return ResponseEntity.ok(userService.getByEmail(email));
+      return ResponseEntity.ok(queryService.getByEmail(email));
     } catch (Exception exception) {
       throw new UserNotFoundException(email + " can not found!");
     }
@@ -61,7 +62,7 @@ public class UserControllerImpl implements UserController {
   public ResponseEntity<UserResponse> getById(@PathVariable Integer id) {
     try {
       
-      return ResponseEntity.ok(userService.getById(id));
+      return ResponseEntity.ok(queryService.getById(id));
     } catch (Exception exception) {
       // TODO: handle exception
       throw new UserNotFoundException(exception.getMessage());
@@ -73,13 +74,13 @@ public class UserControllerImpl implements UserController {
   public ResponseEntity<String> update(
     @PathVariable Integer id, 
     @RequestBody(required = true) UpdateUserRequest request) {
-    return ResponseEntity.ok(userService.update(id, request));
+    return ResponseEntity.ok(commandService.update(id, request));
   }
 
   @Override
   @DeleteMapping("/{id}/delete")
   public ResponseEntity<String> delete(@PathVariable Integer id) {
-    return ResponseEntity.ok(userService.softDelete(id));
+    return ResponseEntity.ok(commandService.softDelete(id));
   }
 
   @Override
@@ -88,7 +89,7 @@ public class UserControllerImpl implements UserController {
   @ResponseBody
   public ResponseEntity<String> insertAdmin(CreateUserRequest request) {
     try {
-      return ResponseEntity.ok(userService.createUserAsAdmin(request));
+      return ResponseEntity.ok(commandService.createUserAsAdmin(request));
     } catch (Exception exception) {
       throw new CustomBadRequestException(exception.getMessage());
     }

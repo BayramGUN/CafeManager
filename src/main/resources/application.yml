@@ -1,12 +1,14 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
-    name: Cafe Management Application
+    name: ${APPLICATION_NAME}
   datasource:
-    name: cafe_management
-    url: jdbc:postgresql://localhost:5432/cafe_management
-    driver: org.postgresql.Driver
-    username: postgres
-    password: myPassword
+    name: ${POSTGRES_DB}
+    url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${POSTGRES_DB}
+    driver: ${DATABASE_DRIVER}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -14,11 +16,16 @@ spring:
     properties:
       hibernate:
         format_sql: true
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database: ${DATABASE}
+    database-platform: ${DATABASE_PLATFORM}
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET_KEY}
+      access-duration: "${JWT_ACCESS_DURATION}"
+  
 logging:
   level:
     org.springframework.security: DEBUG
     
 server:
-  port: 8081
+  port: ${SERVER_PORT}

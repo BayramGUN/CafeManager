@@ -5,15 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.modelmapper.convention.MatchingStrategies;
 
-import com.inn.cafe.user.data.User;
-import com.inn.cafe.user.dto.query.UserResponse;
-
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class ObjectMapperUtils {
 
   private static final ModelMapper modelMapper;
@@ -21,8 +14,6 @@ public class ObjectMapperUtils {
   static {
     modelMapper = new ModelMapper();
     modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD);
-
- 
   }
 
   private ObjectMapperUtils() {}

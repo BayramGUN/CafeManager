@@ -17,11 +17,13 @@ import com.inn.cafe.exception.CustomBadRequestException;
 import com.inn.cafe.exception.CustomNotFoundException;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 @CrossOrigin
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationControllerImpl implements AuthenticationController {
 
   private final AuthenticationService authenticationService;
@@ -48,10 +50,9 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     @RequestBody(required = true) AuthenticationRequest request
   ) {
     try {
-      
       return ResponseEntity.ok(authenticationService.authenticate(request));
     } catch (Exception exception) {
-      throw new CustomNotFoundException(exception.getMessage());
+        throw new CustomBadRequestException(exception.getMessage());
     }
   }
   

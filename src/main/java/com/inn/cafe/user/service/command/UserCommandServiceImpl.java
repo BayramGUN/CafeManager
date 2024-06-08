@@ -1,6 +1,4 @@
-package com.inn.cafe.user.service;
-
-import java.util.List;
+package com.inn.cafe.user.service.command;
 
 import org.hibernate.NonUniqueObjectException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,36 +11,17 @@ import com.inn.cafe.user.data.enums.Role;
 import com.inn.cafe.user.data.enums.Status;
 import com.inn.cafe.user.dto.command.CreateUserRequest;
 import com.inn.cafe.user.dto.command.UpdateUserRequest;
-import com.inn.cafe.user.dto.query.UserResponse;
-import com.inn.cafe.utils.mapper.ObjectMapperUtils;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserCommandServiceImpl implements UserCommandService {
 
   private final UserRepository repository;
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
 
 
-
-  @Override
-  public List<UserResponse> getAll() {
-    return ObjectMapperUtils.mapAll(repository.findAll(), UserResponse.class);
-  }
-
-  @Override
-  public UserResponse getById(Integer id) {
-    User user = repository.findById(id).orElseThrow();
-    return ObjectMapperUtils.map(user, UserResponse.class);
-  }
-
-  @Override
-  public UserResponse getByEmail(String email) {
-    return ObjectMapperUtils.map(repository.findByEmail(email).orElseThrow(), UserResponse.class);    
-  }
 
   @Override
   public String update(Integer id, UpdateUserRequest request) {
@@ -100,14 +79,4 @@ public class UserServiceImpl implements UserService {
 
     return "Admin created successfully! Here is token: " + jwt;
   }
-  //private UserResponse userToUserResponse(User user) {
-  //  var response = UserResponse.builder()
-  //                     .contactNumber(user.getContactNumber())
-  //                     .fullName(user.getFirstName() + " " + user.getLastName())
-  //                     .email(user.getEmail())
-  //                     .id(user.getId())
-  //                     .build();
-  //  response.setUsername(user.getUsername());
-  //  return response;
-  //}
 }

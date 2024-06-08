@@ -1,4 +1,4 @@
-package com.inn.cafe.category;
+package com.inn.cafe.category.web;
 
 import java.util.List;
 
@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.inn.cafe.category.dto.command.CreateCategoryRequest;
 import com.inn.cafe.category.dto.command.UpdateCategoryRequest;
 import com.inn.cafe.category.dto.query.CategoryResponse;
-import com.inn.cafe.category.service.CategoryService;
+import com.inn.cafe.category.service.command.CategoryCommandService;
+import com.inn.cafe.category.service.query.CategoryQueryService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,13 +28,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CategoryControllerImpl implements CategoryController {
 
-  private final CategoryService service;
+  private final CategoryCommandService commandService;
+  private final CategoryQueryService queryService;
 
   @Override
   @GetMapping
   @ResponseBody
   public ResponseEntity<List<CategoryResponse>> getAll() {
-    return ResponseEntity.ok(service.getAll());
+    return ResponseEntity.ok(queryService.getAll());
   }
   
   @Override
@@ -42,21 +44,21 @@ public class CategoryControllerImpl implements CategoryController {
   public ResponseEntity<CategoryResponse> getById(
     @PathVariable Integer id
   ) {
-    return ResponseEntity.ok(service.getById(id));
+    return ResponseEntity.ok(queryService.getById(id));
   }
     
   @Override
   @GetMapping("/getBy")
   @ResponseBody
   public ResponseEntity<CategoryResponse> getByName(String name) {
-    return ResponseEntity.ok(service.getByName(name));
+    return ResponseEntity.ok(queryService.getByName(name));
   }
 
   @Override
   @PostMapping("/insert")
   public ResponseEntity<String> add(
     @RequestBody(required = true) CreateCategoryRequest request) {
-    return ResponseEntity.ok(service.insert(request));
+    return ResponseEntity.ok(commandService.insert(request));
   }
 
   @Override
@@ -65,13 +67,13 @@ public class CategoryControllerImpl implements CategoryController {
     @PathVariable Integer id, 
     @RequestBody(required = true) UpdateCategoryRequest request
   ) {
-      return ResponseEntity.ok(service.update(id, request));
+      return ResponseEntity.ok(commandService.update(id, request));
   }
 
   @Override
   @DeleteMapping("/{id}/delete")
   public ResponseEntity<String> delete(@PathVariable Integer id) {
-    return ResponseEntity.ok(service.delete(id));
+    return ResponseEntity.ok(commandService.delete(id));
   }
   
 }
